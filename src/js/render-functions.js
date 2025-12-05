@@ -35,7 +35,7 @@ export function createGallery(images) {
 
 export function clearGallery() {
     gallery.innerHTML = "";
-    
+
 }
 
 export function showLoader() {
@@ -44,5 +44,13 @@ export function showLoader() {
 
 export function hideLoader() {
      loader.style.display = 'none';
+}
+
+export function hideLoadMoreButton() {
+    loadMoreButton.style.display = 'none';
+}
+
+export function showLoadMoreButton() {
+    loadMoreButton.style.display = 'block';
 }
 

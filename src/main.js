@@ -1,13 +1,16 @@
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
-import { getImagesByQuery } from "./js/pixabay-api.js"
-import { createGallery } from "./js/render-functions.js"
-import { clearGallery } from "./js/render-functions.js"
-import { showLoader } from "./js/render-functions.js"
-import { hideLoader } from "./js/render-functions.js"
+import { getImagesByQuery, perPage } from "./js/pixabay-api.js"
+import {
+    createGallery,
+    clearGallery,
+    showLoader,
+    hideLoader,
+    showLoadMoreButton,
+    hideLoadMoreButton } from "./js/render-functions.js"
 
-export let page = 1;
-export const perPage = 15;
+let page = 1;
+let userQuery = '';
 const form = document.querySelector('.form');
 const searchText = document.querySelector('.form input');
 const loadMoreButton = document.querySelector('.button-load-more');
@@ -16,24 +19,25 @@ let imgObjArray = [];
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     event.stopImmediatePropagation();
+    userQuery = searchText.value.trim();
+    if (!userQuery) return;
     page = 1;
     clearGallery();
-    if (searchText.value === '') return;
     showLoader();
-    getImagesByQueryMaker(searchText.value, page);
+    getImagesByQueryMaker(searchText.value.trim(), page);
 });
 
 loadMoreButton.addEventListener('click', (event) => {
     event.stopImmediatePropagation();
     showLoader();
     page++;
-    getImagesByQueryMaker(searchText.value, page);
+    getImagesByQueryMaker(userQuery, page);
 }) 
 
 
-async function getImagesByQueryMaker(searchText, page) {
+async function getImagesByQueryMaker(userQuery, page) {
     try {
-        const data = await getImagesByQuery(searchText, page);
+        const data = await getImagesByQuery(userQuery, page);
 
         if (data.hits.length === 0) {
             iziToast.info({
@@ -81,12 +85,4 @@ function scrollGallery() {
         top: cardHeight * 2,
         behavior: "smooth"
     });
-}
-
-function hideLoadMoreButton() {
-    loadMoreButton.style.display = 'none';
-}
-
-function showLoadMoreButton() {
-    loadMoreButton.style.display = 'block';
 }
