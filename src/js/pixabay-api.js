@@ -1,22 +1,11 @@
+// pixabay-api.js
 import axios from 'axios';
+import {page, perPage} from "../main.js"
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
-const submitButton = document.querySelector('.form button');
-export let page = 1;
-export let perPage = 15;
-let lastQuery = '';
 
-export async function getImagesByQuery(query,) {
-    submitButton.disabled = true;
 
-    if (lastQuery === query) {
-        page += 1;
-    }
-    else {
-        lastQuery = query;
-        page = 1;
-    }
-   
+export async function getImagesByQuery(query, pageArg = page) {
     const response = await axios.get('', {
         params: {
             key: '53548536-2a5565f3da63b0c0db767d1af',
@@ -24,7 +13,7 @@ export async function getImagesByQuery(query,) {
             image_type: 'photo',
             orientation: 'horizontal',
             safesearch: true,
-            page: page,
+            page: pageArg,
             per_page: perPage,
         },
     });

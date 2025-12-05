@@ -35,6 +35,7 @@ export function createGallery(images) {
 
 export function clearGallery() {
     gallery.innerHTML = "";
+    
 }
 
 export function showLoader() {
