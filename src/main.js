@@ -78,7 +78,7 @@ function scrollGallery() {
     const cardHeight = firstCard.getBoundingClientRect().height;
 
     window.scrollBy({
-        top: cardHeight * 3,
+        top: cardHeight * 2,
         behavior: "smooth"
     });
 }
