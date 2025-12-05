@@ -7,13 +7,12 @@ import { showLoader } from "./js/render-functions.js"
 import { hideLoader } from "./js/render-functions.js"
 
 export let page = 1;
-export let perPage = 15;
+export const perPage = 15;
 const form = document.querySelector('.form');
 const searchText = document.querySelector('.form input');
 const submitButton = document.querySelector('.form button');
 const loadMoreButton = document.querySelector('.button-load-more');
 let imgObjArray = [];
-let lastQuery = '';
 
 submitButton.disabled = true;
 
@@ -23,21 +22,17 @@ form.addEventListener('input', () => {
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    if (searchText.value === '') {
-        return;
-    }
-
-    if (lastQuery !== searchText.value) {
-        page = 1;
-        clearGallery();
-        lastQuery = searchText.value;
-    }
+    event.stopImmediatePropagation();
     showLoader();
+    page = 1;
+    clearGallery();
+    if (searchText.value === '') return;
     getImagesByQueryMaker(searchText.value);
    
 });
 
-loadMoreButton.addEventListener('click', () => {
+loadMoreButton.addEventListener('click', (event) => {
+    event.stopImmediatePropagation();
     showLoader();
     page++;
     getImagesByQueryMaker(searchText.value);
@@ -81,9 +76,7 @@ async function getImagesByQueryMaker(searchText) {
             message: error,
             position: "topRight",
         });
-    } finally {
-        hideLoader();
-    }
+    } finally { hideLoader(); }
 }
 
 function scrollGallery() {

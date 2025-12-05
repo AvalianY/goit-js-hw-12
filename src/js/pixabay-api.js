@@ -5,7 +5,7 @@ import {page, perPage} from "../main.js"
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
 
-export async function getImagesByQuery(query, pageArg = page) {
+export async function getImagesByQuery(query, pageArg) {
     const response = await axios.get('', {
         params: {
             key: '53548536-2a5565f3da63b0c0db767d1af',
@@ -13,7 +13,7 @@ export async function getImagesByQuery(query, pageArg = page) {
             image_type: 'photo',
             orientation: 'horizontal',
             safesearch: true,
-            page: pageArg,
+            page: page,
             per_page: perPage,
         },
     });
