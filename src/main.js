@@ -51,7 +51,10 @@ function getImagesByQueryMaker(searchText) {
             }
             imgObjArray = data.hits;
             createGallery(imgObjArray);
-            scrollGallery();
+
+            if (page > 1) {
+                scrollGallery();
+            }
             
             const totalPages = Math.ceil(data.totalHits / perPage);
 
