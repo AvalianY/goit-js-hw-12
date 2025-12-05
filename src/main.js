@@ -23,11 +23,11 @@ form.addEventListener('input', () => {
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     event.stopImmediatePropagation();
-    showLoader();
     page = 1;
     clearGallery();
     if (searchText.value === '') return;
-    getImagesByQueryMaker(searchText.value);
+    showLoader();
+    getImagesByQueryMaker(searchText.value, page);
    
 });
 
@@ -35,13 +35,13 @@ loadMoreButton.addEventListener('click', (event) => {
     event.stopImmediatePropagation();
     showLoader();
     page++;
-    getImagesByQueryMaker(searchText.value);
+    getImagesByQueryMaker(searchText.value, page);
 }) 
 
 
-async function getImagesByQueryMaker(searchText) {
+async function getImagesByQueryMaker(searchText, page) {
     try {
-        const data = await getImagesByQuery(searchText);
+        const data = await getImagesByQuery(searchText, page);
 
         if (data.hits.length === 0) {
             iziToast.info({
@@ -49,7 +49,7 @@ async function getImagesByQueryMaker(searchText) {
                 position: "topRight",
             });
             clearGallery();
-            loadMoreButton.style.display = 'none';
+            hideLoader();
             return;
         }
 
@@ -67,8 +67,6 @@ async function getImagesByQueryMaker(searchText) {
             iziToast.info({
                 message: "We're sorry, but you've reached the end of search results.",
             });
-        } else {
-            loadMoreButton.style.display = 'block';
         }
 
     } catch (error) {
