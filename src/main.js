@@ -10,15 +10,8 @@ export let page = 1;
 export const perPage = 15;
 const form = document.querySelector('.form');
 const searchText = document.querySelector('.form input');
-const submitButton = document.querySelector('.form button');
 const loadMoreButton = document.querySelector('.button-load-more');
 let imgObjArray = [];
-
-submitButton.disabled = true;
-
-form.addEventListener('input', () => {
-    submitButton.disabled = searchText.value !== '' ? false : true;
-});
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -28,7 +21,6 @@ form.addEventListener('submit', (event) => {
     if (searchText.value === '') return;
     showLoader();
     getImagesByQueryMaker(searchText.value, page);
-   
 });
 
 loadMoreButton.addEventListener('click', (event) => {
@@ -49,7 +41,7 @@ async function getImagesByQueryMaker(searchText, page) {
                 position: "topRight",
             });
             clearGallery();
-            hideLoader();
+            hideLoadMoreButton();
             return;
         }
 
@@ -63,10 +55,12 @@ async function getImagesByQueryMaker(searchText, page) {
         const totalPages = Math.ceil(data.totalHits / perPage);
 
         if (page >= totalPages) {
-            loadMoreButton.style.display = 'none';
+            hideLoadMoreButton();
             iziToast.info({
                 message: "We're sorry, but you've reached the end of search results.",
             });
+        } else {
+            showLoadMoreButton();
         }
 
     } catch (error) {
@@ -87,4 +81,12 @@ function scrollGallery() {
         top: cardHeight * 3,
         behavior: "smooth"
     });
+}
+
+function hideLoadMoreButton() {
+    loadMoreButton.style.display = 'none';
+}
+
+function showLoadMoreButton() {
+    loadMoreButton.style.display = 'block';
 }
