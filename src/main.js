@@ -3,11 +3,16 @@ import "izitoast/dist/css/iziToast.min.css";
 import { getImagesByQuery } from "./js/pixabay-api.js"
 import { createGallery } from "./js/render-functions.js"
 import { clearGallery } from "./js/render-functions.js"
+import { showLoader } from "./js/render-functions.js"
+import { hideLoader } from "./js/render-functions.js"
+import {page, perPage} from "./js/pixabay-api.js"
     
 const form = document.querySelector('.form');
 const searchText = document.querySelector('.form input');
 const submitButton = document.querySelector('.form button');
+const loadMoreButton = document.querySelector('.button-load-more');
 let imgObjArray = [];
+let lastQuery = '';
 
 submitButton.disabled = true;
 
@@ -17,8 +22,23 @@ form.addEventListener('input', () => {
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
+    if (lastQuery !== searchText.value) {
+        clearGallery();
+        lastQuery = searchText.value;
+    }
+    showLoader();
+    getImagesByQueryMaker(searchText.value);
+   
+});
 
-    getImagesByQuery(searchText.value)
+loadMoreButton.addEventListener('click', () => {
+    showLoader();
+    getImagesByQueryMaker(searchText.value);
+}) 
+
+
+function getImagesByQueryMaker(searchText) {
+     getImagesByQuery(searchText)
         .then(data => {
             if (data.hits.length === 0) {
                 iziToast.info({
@@ -26,15 +46,41 @@ form.addEventListener('submit', (event) => {
                 position: "topRight",
                 });
                 clearGallery();
+                loadMoreButton.style.display = 'none';
                 return;
             }
             imgObjArray = data.hits;
             createGallery(imgObjArray);
+            scrollGallery();
+            
+            const totalPages = Math.ceil(data.totalHits / perPage);
+
+            if (page >= totalPages) {
+                loadMoreButton.style.display = 'none';
+                iziToast.info({
+                message: "We're sorry, but you've reached the end of search results.",
+                });
+            } else {
+                loadMoreButton.style.display = 'block';
+            }
         })
         .catch(error => {
             iziToast.error({
-                message: error.message,
+                message: error,
                 position: "topRight",
             });
-        });
-});
+        })
+         .finally(()=>hideLoader());
+}
+
+function scrollGallery() {
+    const firstCard = document.querySelector('.gallery-item');
+    if (!firstCard) return;
+
+    const cardHeight = firstCard.getBoundingClientRect().height;
+
+    window.scrollBy({
+        top: cardHeight * 3,
+        behavior: "smooth"
+    });
+}

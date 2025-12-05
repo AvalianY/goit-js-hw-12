@@ -10,8 +10,6 @@ const lightbox = new SimpleLightbox('.gallery a', {
     });
 
 export function createGallery(images) {
-    showLoader();
-    clearGallery();
     
     const galleryContent = images.map(img => 
         `<li class="gallery-item">
@@ -31,20 +29,19 @@ export function createGallery(images) {
         </li>`
     ).join('');
 
-    gallery.insertAdjacentHTML("afterbegin", galleryContent);
+    gallery.insertAdjacentHTML("beforeend", galleryContent);
     lightbox.refresh();
-    hideLoader();
 }
 
 export function clearGallery() {
     gallery.innerHTML = "";
 }
 
-function showLoader() {
+export function showLoader() {
      loader.style.display = 'block';
 }
 
-function hideLoader() {
+export function hideLoader() {
      loader.style.display = 'none';
 }
 
