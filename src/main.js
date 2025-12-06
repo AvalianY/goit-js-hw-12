@@ -20,15 +20,22 @@ form.addEventListener('submit', (event) => {
     event.preventDefault();
     event.stopImmediatePropagation();
     userQuery = searchText.value.trim();
-    if (!userQuery) return;
+    if (!userQuery) {
+        iziToast.info({
+                message: "The input field cannot be empty or contain spaces.",
+            });
+        return;
+    }
     page = 1;
     clearGallery();
+    hideLoadMoreButton();
     showLoader();
     getImagesByQueryMaker(searchText.value.trim(), page);
 });
 
 loadMoreButton.addEventListener('click', (event) => {
     event.stopImmediatePropagation();
+    hideLoadMoreButton();
     showLoader();
     page++;
     getImagesByQueryMaker(userQuery, page);
